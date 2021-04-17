@@ -1,18 +1,5 @@
 const fs = require("fs");
 const users = require('../data/users.json')
-// const users = [
-//     {
-//         "id": 0,
-//         "cash": 1000,
-//         "credit":1000
-//     },
-//     {
-//         "id": 1,
-//         "cash": 1000,
-//         "credit":1000
-//     }
-// ]
-
 
 const addUser = (req,res)=>{
    
@@ -155,7 +142,7 @@ const transferMoney = (req, res) =>{
     }else if(reciveingId == sendingId){
         return res.status(200).send("Transfer should accour between two different users")
     }
-
+    //Todo
     // else if(!(users.find((u) =>{u.id == sendingId}))|| !(users.find((u) =>{u.id == reciveingId}))){
     //     return res.status(200).send("One or more users do not exist")
     // }
