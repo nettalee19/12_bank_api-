@@ -1,14 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const port =8001;
+const port =5000;
 const usersRoute = require('./routes/users.routes');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+const cors = require('cors');
 
 const db=fs.readFileSync('../data/users.json').toString()
 dbb=JSON.parse(db)
 
+app.use(cors());
 app.use('/bank/users',usersRoute);
 
 // app.listen(port,()=>{
