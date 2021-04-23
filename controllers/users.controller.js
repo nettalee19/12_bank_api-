@@ -6,19 +6,9 @@ const accounts = require('../models/accounts.models')
 const addUser = (req,res)=>{
    
     const {id, cash, credit}  = req.body
-
-    // let user = users.users.find((u) =>{
-    //     return u.id == id})
-
-    // if(user){
-    //     return res.status(200).send("User exists")
-    // } 
-    // else if(cash < 0 || credit < 0){
-    //     return res.status(200).send("Cash amount and Credit amount should be positive")
-    // }
-    //else {
+    
         const newUser = new accounts({
-            "user_id" : id, 
+            "id" : id, 
             "cash": cash, 
             "credit": credit
         })
@@ -51,11 +41,12 @@ const getUserById = async (req, res) =>{
 }
 
 
-const deposit = (req, res) =>{
+const deposit = async (req, res) =>{
+
     const updates = Object.keys(req.body)
     const allowedUpdate = ["cash"]
     const isValidOperation = updates.every((update) => allowedUpdate.includes(update))
-    const { user_id } = req.params;
+    const { _id } = req.params;
     const { cash } = req.body;
 
 
@@ -63,81 +54,64 @@ const deposit = (req, res) =>{
         return res.status(400).send({error: 'Updates most only be regarding cash amount'})
     }
     try {
-        const user = accounts.findByIdAndUpdate(req.params, {cash: cash }, {new:true, runValidators: true })
-        
+        const user = await accounts.findByIdAndUpdate(_id,  {$inc: {cash: cash }}, {new:true, runValidators: true })
+        console.log(user)
         if(!user){
             res.status(404).send("No such account in the system")
         }
         
         return res.send({"success":user})
 
-    } catch{
+    } catch(error){
         res.status(400).send({"error":error})
     }
-
-
-
-    // if(cash >0){
-
-    //     const user = await accounts.find({_id: `${id}`})
-
-    //     if(user){
-    //         user.cash +=  cash
-    //         res.status(200).send(`You have just deposited ${cash}$ into your account. Your balance in total: ${user.cash}$`)
-            
-    //         console.log(user)
-    //     }else{
-    //         return res.status(404).send("User does not exsist")
-    //     }
-    
-            
-    // }else{
-    //     return res.status(400).send("Not a valid request. Amount of deposite must be positive")
-    // }
-    
 
 }
 
 const updateCredit = async (req, res) =>{
-    const updates = Object.keys(req.body)
-    const allowedUpdate = ["credit"]
-    const isValidOperation = updates.every((update) => allowedUpdate.includes(update))
-    
-    // const {user_id} = req.params
-    const {credit} = req.body
+    // const updates = Object.keys(req.body)
+    // const allowedUpdate = ["credit"]
+    // const isValidOperation = updates.every((update) => allowedUpdate.includes(update))
+    // const { _id } = req.params;
+    // const { credit } = req.body;
+    console.log("hello")
 
-    if(!isValidOperation) {
-        return res.status(400).send({error: 'Updates most only be regarding credit value'})
-    }
-    try {
-        const user = await accounts.findByIdAndUpdate( req.params, { credit: credit }, {new:true, runValidators: true })
+    // if(!isValidOperation) {
+    //     return res.status(400).send({error: 'Updates most only be regarding credit amount'})
+    // }
+    // try {
         
-        if(!user){
-            res.status(404).send("No such account in the system")
-        }
+    //     const user = await accounts.findByIdAndUpdate(_id,  {$inc: {credit: credit }}, {new:true, runValidators: true })
+    //     console.log(user)
+    //     if(!user){
+    //         res.status(404).send("No such account in the system")
+    //     }
         
-        return res.send({"success":user})
+    //     return res.send({"success":user})
 
-    } catch (error){
-        res.status(400).send({"error":error})
-    }
+    // } catch(error){
+    //     res.status(400).send({"error":error})
+    // }
 }
 
 const withdrawMoney = (req, res) =>{
-    const {id} = req.params
-    const {withdraw} = req.body
+    const updates = Object.keys(req.body)
+    const allowedUpdate = ["cash"]
+    const isValidOperation = updates.every((update) => allowedUpdate.includes(update))
+    const { _id } = req.params;
+    const { withdraw } = req.body;
+
+    //const {id} = req.params
+    if(!isValidOperation) {
+        return res.status(400).send({error: 'Updates most only be regarding withdraw amount'})
+    }
 
     if(withdraw < 0 ){
         res.status(404).send("Withdraw must be a positive amount")
     }
+
     else{
 
-        let user = users.users.find((u) =>{
-            return u.id == id
-        })
-        console.log(user)
-        
-    
         if(withdraw <= user.cash){//if the withdraw amount is below the cash
             user.cash = user.cash-withdraw
             console.log(user.cash)

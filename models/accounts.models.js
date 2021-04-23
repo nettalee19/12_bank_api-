@@ -1,14 +1,14 @@
 const mongoose = require('mongoose')
 
 const Accounts = mongoose.model('accounts',{
-    user_id:{
+    id:{
         type: String,
         required: true,
         unique: true
     },
     cash:{
         type: Number,
-        required: true,
+        required: false,
         default: 0,
         unique: false
     },

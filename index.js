@@ -15,7 +15,8 @@ app.use(bodyParser.json());
 //app.use(cors());
 app.use('/bank/users',usersRoute);
 
-mongoose.connect('mongodb://127.0.0.1:27017/bank', {
+//mongoose.connect('mongodb://127.0.0.1:27017/bank', {
+mongoose.connect('mongodb+srv://nettalee19:dM_HqsyqT9K8LK.@cluster0.u9jns.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
