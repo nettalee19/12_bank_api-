@@ -1,106 +1,126 @@
-const fs = require("fs");
-const users = require('../data/users.json')
+//const fs = require("fs");
+//const users = require('../data/users.json')
+
+const accounts = require('../models/accounts.models')
 
 const addUser = (req,res)=>{
    
     const {id, cash, credit}  = req.body
 
-    let user = users.users.find((u) =>{
-        return u.id == id})
+    // let user = users.users.find((u) =>{
+    //     return u.id == id})
 
-    if(user){
-        return res.status(200).send("User exists")
-    } 
-    else if(cash < 0 || credit < 0){
-        return res.status(200).send("Cash amount and Credit amount should be positive")
-    }
-    else {
-        const newUser ={
-            "id" : id, "cash": cash, "credit": credit
-        }
-        users.users.push(newUser);
-        console.log(newUser)
-    
-        fs.writeFileSync('./data/users.json', JSON.stringify(users))
-        return res.status(200).json("New user add");
+    // if(user){
+    //     return res.status(200).send("User exists")
+    // } 
+    // else if(cash < 0 || credit < 0){
+    //     return res.status(200).send("Cash amount and Credit amount should be positive")
+    // }
+    //else {
+        const newUser = new accounts({
+            "user_id" : id, 
+            "cash": cash, 
+            "credit": credit
+        })
+        newUser.save((err) => {
+            if (err) return res.json({"error--": err})
+            return res.json({"success": newUser})
+        });
 
-    }
+    //}
 
 }
 
-const getAllUsers = (req,res)=>{
+const getAllUsers = async (req,res)=>{
+    const users = await accounts.find()
     return res.send(users)
 
 }
 
-const getUserById =(req, res) =>{
-    const {Id} = req.params
-    let user = users.find((u) =>{
-        return u.id == Id})
-
-    console.log(user)
+const getUserById = async (req, res) =>{
+    const {id} = req.params
     
+    const user = await accounts.find({user_id: `${id}`})
+
     if(!user){
-        return res.status(404).send("User with such id doesn't exist")
-    } else{
-        return res.status(200).send(user)
-    }  
+        return res.send("Account does not exist in the system")
+
+    }
+    return res.send(user)  
  
 }
 
 
-const deposit =(req, res) =>{
-    
-    const { id } = req.params;
+const deposit = (req, res) =>{
+    const updates = Object.keys(req.body)
+    const allowedUpdate = ["cash"]
+    const isValidOperation = updates.every((update) => allowedUpdate.includes(update))
+    const { user_id } = req.params;
     const { cash } = req.body;
 
-    if(cash >0){
 
-        let user = users.users.find((u) =>{
-            return u.id == id
-        })
-
-        if(user){
-            user.cash +=  cash
-            res.status(200).send(`You have just deposited ${cash}$ into your account. Your balance in total: ${user.cash}$`)
-            fs.writeFileSync('./data/users.json', JSON.stringify(users))
-            console.log(user)
-        }else{
-            return res.status(404).send("User does not exsist")
+    if(!isValidOperation) {
+        return res.status(400).send({error: 'Updates most only be regarding cash amount'})
+    }
+    try {
+        const user = accounts.findByIdAndUpdate(req.params, {cash: cash }, {new:true, runValidators: true })
+        
+        if(!user){
+            res.status(404).send("No such account in the system")
         }
+        
+        return res.send({"success":user})
+
+    } catch{
+        res.status(400).send({"error":error})
+    }
+
+
+
+    // if(cash >0){
+
+    //     const user = await accounts.find({_id: `${id}`})
+
+    //     if(user){
+    //         user.cash +=  cash
+    //         res.status(200).send(`You have just deposited ${cash}$ into your account. Your balance in total: ${user.cash}$`)
+            
+    //         console.log(user)
+    //     }else{
+    //         return res.status(404).send("User does not exsist")
+    //     }
     
             
-    }else{
-        return res.status(400).send("Not a valid request. Amount of deposite must be positive")
-    }
+    // }else{
+    //     return res.status(400).send("Not a valid request. Amount of deposite must be positive")
+    // }
     
 
 }
 
-const updateCredit = (req, res) =>{
-    const {id} = req.params
+const updateCredit = async (req, res) =>{
+    const updates = Object.keys(req.body)
+    const allowedUpdate = ["credit"]
+    const isValidOperation = updates.every((update) => allowedUpdate.includes(update))
+    
+    // const {user_id} = req.params
     const {credit} = req.body
 
-    if(credit >0){
-
-        let user = users.users.find((u) =>{
-            return u.id == id
-        })
-
-        if(user){
-            user.credit =  credit
-            fs.writeFileSync('./data/users.json', JSON.stringify(users))
-            res.status(200).send(`You have just updated your credit limit to ${user.credit}$ `)
-            console.log(user)
-        }else{
-            return res.status(404).send("User does not exsist")
-        }
-    
-            
-    }else{
-        return res.status(400).send("Not a valid request. Amount of deposite must be positive")
+    if(!isValidOperation) {
+        return res.status(400).send({error: 'Updates most only be regarding credit value'})
     }
+    try {
+        const user = await accounts.findByIdAndUpdate( req.params, { credit: credit }, {new:true, runValidators: true })
+        
+        if(!user){
+            res.status(404).send("No such account in the system")
+        }
+        
+        return res.send({"success":user})
 
+    } catch (error){
+        res.status(400).send({"error":error})
+    }
 }
 
 const withdrawMoney = (req, res) =>{

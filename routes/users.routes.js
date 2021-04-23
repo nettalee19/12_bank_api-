@@ -7,7 +7,7 @@ router.get('/', (req,res) =>{
     userController.getAllUsers(req,res)
 }).post('/', (req,res) =>{
     userController.addUser(req,res)
-}).get('/:Id',(req,res) =>{
+}).get('/:id/user',(req,res) =>{
     userController.getUserById(req,res)
 }).put('/:id/deposit', (req,res) =>{
     userController.deposit(req,res)

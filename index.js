@@ -1,27 +1,42 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const port =5000;
+const mongoose = require('mongoose');
 const usersRoute = require('./routes/users.routes');
+const port =8001;
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-const cors = require('cors');
+// const cors = require('cors');
 
-const db=fs.readFileSync('../data/users.json').toString()
-dbb=JSON.parse(db)
+// const db=fs.readFileSync('../data/users.json').toString()
+// dbb=JSON.parse(db)
 
-app.use(cors());
+//app.use(cors());
 app.use('/bank/users',usersRoute);
 
-// app.listen(port,()=>{
-//     console.log(`bank's app start at ${port}`)
+mongoose.connect('mongodb://127.0.0.1:27017/bank', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true
+}).then(() => {
+    console.log("database connect")
+});
+
+
+// app.get('/',(req,res)=>{
+//     //return res.json({success : {id:12,email : 'nully@gmail.com'}})
+//     //return res.send({success : "API IS WORKING!"})
+//     console.log("this")
+//     return res.json({success : {dbb}})
+//  })
+
+
+app.listen(port,()=>{
+    console.log(`bank's app start at ${port}`)
+})
+
+// app.listen(process.env.PORT || 5000, () => {
+//     console.log(`application start at ${process.env.PORT || 5000}`)
 // })
-
-app.get('/',(req,res)=>{
-    //return res.json({success : {id:12,email : 'nully@gmail.com'}})
-    //return res.send({success : "API IS WORKING!"})
-    console.log("this")
-    return res.json({success : {dbb}})
- })
-
-app.listen(process.env.PORT || 5000)
