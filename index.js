@@ -22,8 +22,13 @@ mongoose.connect('mongodb+srv://nettalee19:dM_HqsyqT9K8LK.@cluster0.u9jns.mongod
     useFindAndModify: false,
     useCreateIndex: true
 }).then(() => {
-    console.log("database connect")
-});
+    console.log("database connected")
+})
+
+app.get('/',(req,res)=>{
+    res.json({success : 'Bank API'})
+})
+
 // app.get('/', (req,res) =>{
 //     res.send("test")
 // })
