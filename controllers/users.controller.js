@@ -42,47 +42,46 @@ const getUserById = async (req, res) =>{
 
 
 const deposit = async (req, res) =>{
+    //const {id} = req.params
+    
+    const user = await accounts.findByIdAndUpdate(req.params.id, {$inc: {cash: req.body.cash}}, {new:true, runValidators: true })
 
-    const updates = Object.keys(req.body)
-    const allowedUpdate = ["cash"]
-    const isValidOperation = updates.every((update) => allowedUpdate.includes(update))
-    const { _id } = req.params;
-    const { cash } = req.body;
+    if(!user){
+        console.log("nop")
+        return res.send("Account does not exist in the system")
 
-
-    if(!isValidOperation) {
-        return res.status(400).send({error: 'Updates most only be regarding cash amount'})
     }
-    try {
-        const user = await accounts.findByIdAndUpdate(_id,  {$inc: {cash: cash }}, {new:true, runValidators: true })
-        console.log(user)
-        if(!user){
-            res.status(404).send("No such account in the system")
-        }
-        
-        return res.send({"success":user})
+    return res.json(user)
 
-    } catch(error){
-        res.status(400).send({"error":error})
-    }
+    // const {cash} = req.body
 
-}
+    // try{
+    //     const user = await accounts.findByIdAndUpdate(req.params, {$inc: {"cash": cash}}, {new:true, runValidators: true})
+    //     console.log(user)
 
-const updateCredit = async (req, res) =>{
+    //     if(!user){
+    //         res.status(404).send("No such account in the system")
+    //     }
+    //     return res.send({"success":user})
+    // }
+    //  catch(error){
+    //     res.status(400).send({"error":error})
+    // }
+
+
     // const updates = Object.keys(req.body)
-    // const allowedUpdate = ["credit"]
+    // const allowedUpdate = ["cash"]
     // const isValidOperation = updates.every((update) => allowedUpdate.includes(update))
     // const { _id } = req.params;
-    // const { credit } = req.body;
-    console.log("hello")
+    // const { cash } = req.body;
+
 
     // if(!isValidOperation) {
-    //     return res.status(400).send({error: 'Updates most only be regarding credit amount'})
+    //     return res.status(400).send({error: 'Updates most only be regarding cash amount'})
     // }
     // try {
-        
-    //     const user = await accounts.findByIdAndUpdate(_id,  {$inc: {credit: credit }}, {new:true, runValidators: true })
-    //     console.log(user)
+    //     const user = await accounts.findByIdAndUpdate(_id, {"cash": req.body }, {new:true, runValidators: true })
+    //     console.log(_id)
     //     if(!user){
     //         res.status(404).send("No such account in the system")
     //     }
@@ -92,6 +91,66 @@ const updateCredit = async (req, res) =>{
     // } catch(error){
     //     res.status(400).send({"error":error})
     // }
+
+    // const updates = Object.keys(req.body)
+    // const allowedUpdate = ["cash"]
+    // const isValidOperation = updates.every((update) => allowedUpdate.includes(update))
+    // const { _id } = req.params;
+    // const { cash } = req.body;
+
+
+    // if(!isValidOperation) {
+    //     return res.status(400).send({error: 'Updates most only be regarding cash amount'})
+    // }
+    // try {
+    //     const user = await accounts.findByIdAndUpdate(_id,  {$inc: {"cash": cash }}, {new:true, runValidators: true })
+    //     //console.log(user)
+    //     if(!user){
+    //         return res.status(404).send("No such account in the system")
+    //     }
+        
+    //     return res.send({"success":user})
+
+    // } catch(error){
+    //     return res.status(400).send({"error":error})
+    // }
+
+}
+
+const updateCredit = async (req, res) =>{
+    // // const updates = Object.keys(req.body)
+    // // const allowedUpdate = ["credit"]
+    // // const isValidOperation = updates.every((update) => allowedUpdate.includes(update))
+    // const { _id } = req.params;
+    // const { credit } = req.body;
+
+    // // if(!isValidOperation) {
+    // //     return res.status(400).send({error: 'Updates most only be regarding credit amount'})
+    // // }
+    // try {
+        
+    //     const user = await accounts.findByIdAndUpdate(_id,  {credit: credit }, {new:true, runValidators: true })
+    //     //console.log(user)
+    //     if(!user){
+    //         return res.status(404).json("No such account in the system")
+    //     }
+        
+    //     return res.status(200).json({"success":user})
+
+    // } catch(error){
+    //     return res.status(400).json({"error":error})
+    // }
+    const { amount } = req.body;
+    try {
+        const account = await accounts.findByIdAndUpdate(req.params.id, { $inc: { "credit": amount } }, { new: true, runValidators: true });
+        console.log(account, 'account');
+        if (!account) {
+            return res.status(404).send({ error: 'Account not found' })
+        }
+    }
+    catch (error) {
+        res.status(400).json(error)
+    }
 }
 
 const withdrawMoney = (req, res) =>{
