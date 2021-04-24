@@ -30,14 +30,6 @@ app.get('/',(req,res)=>{
     res.json({success : 'Bank API'})
     
 })
-app.get('/blabla',(req,res)=>{
-    res.json({success : 'blabla'})
-    
-})
-
-// app.get('/', (req,res) =>{
-//     res.send("test")
-// })
 
 app.listen(process.env.PORT || 5000, () => {
     console.log(`application start at ${process.env.PORT || 5000}`)
@@ -51,7 +43,3 @@ app.listen(process.env.PORT || 5000, () => {
 //     return res.json({success : {dbb}})
 //  })
 
-
-// app.listen(port,()=>{
-//     console.log(`bank's app start at ${port}`)
-// })
