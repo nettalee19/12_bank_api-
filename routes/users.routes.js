@@ -3,10 +3,15 @@ const router = express.Router();
 const userController = require('../controllers/users.controller')
 
 router.get('/', async (req,res) =>{
-    //return res.status(200).json({users : users})
-    console.log("this is users")
-   await userController.getAllUsers(req,res)
-    console.log("this is bank")
+    try{
+        //return res.status(200).json({users : users})
+        console.log("this is users")
+       await userController.getAllUsers(req,res)
+        console.log("this is bank")
+
+    }catch (e){
+        console.log(e)
+    }
 })
 // .post('/', (req,res) =>{
 //     userController.addUser(req,res)
