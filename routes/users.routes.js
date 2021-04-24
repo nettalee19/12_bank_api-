@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/users.controller')
 
-router.get('/', (req,res) =>{
+router.get('/', async (req,res) =>{
     //return res.status(200).json({users : users})
     console.log("this is users")
-    userController.getAllUsers(req,res)
+   await userController.getAllUsers(req,res)
     console.log("this is bank")
 })
 // .post('/', (req,res) =>{
