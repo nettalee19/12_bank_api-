@@ -1,5 +1,4 @@
-//const fs = require("fs");
-//const users = require('../data/users.json')
+
 
 const accounts = require('../models/accounts.models')
 const transactions = require('../models/transaction.models')
@@ -10,14 +9,14 @@ const addUser = (req,res)=>{
     const {id, cash, credit}  = req.body
     
         const newUser = new accounts({
-            "id" : req.body.id, 
-            "cash": req.body.cash, 
-            "credit": req.body.credit
+            "id" : id, 
+            "cash": cash, 
+            "credit": credit
         })
         console.log(newUser)
         newUser.save((err) => {
-            if (err) return res.send({"error": err})
-            return res.send({"success": newUser})
+            if (err) return res.status(400).send({"error": err})
+            return res.status(200).send({"success": newUser})
         });
 
     //}
@@ -128,21 +127,32 @@ const updateCredit = async (req, res) =>{
 
 const withdrawMoney = async(req, res) =>{
 
-    const askedAccount = req.params.id
-    const {amount} = req.body
-    const exist = await accounts(askedAccount);
-    if (amount>0) {
-        if(exist) {
-            if(exist.balance + exist.credit >= amount) {
-                try {
-                    await accounts.updateOne({passport: askedAccount}, {$inc: {"cash": -amount}});
-                     
-                     res.send("updated")
-                 }
-                 catch(err) {
-                    res.send(err)
-                 }
-            } }}
+    try{
+        const user = await accounts.findById(req.params.id)
+    
+        if(!user){
+            return res.status(404).send("Account does not exist in the system")
+    
+        }
+        if(req.body.withdraw <0){
+            return res.status(400).send({error: 'Withdraw must be a positive value'})
+        }
+
+        // const transaction = new transactions({
+        //     //to : req.params.id, 
+        //     toAccount : user.id, 
+        //     operationName: "Credit update", 
+        //     amount: req.body.credit
+        // })
+        // transaction.save((err) => {
+        //     if (err) return res.json({"error": err})
+        //     return res.json({"success": transaction})
+        // })
+        //return res.status(200).json(user)
+
+    } catch(error){
+        res.status(400).send({"error":error})
+    }
 
     // const {id} = req.params.id
     // //const {withdraw} = req.body.withdraw
