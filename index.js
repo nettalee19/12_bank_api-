@@ -1,12 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const app = express();
 const mongoose = require('mongoose');
+
+const app = express();
 const usersRoute = require('./routes/users.routes');
-const port =5000;
+//const port =5000;
+const cors = require('cors');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cors());
 // const cors = require('cors');
 
 // const db=fs.readFileSync('../data/users.json').toString()
@@ -16,18 +19,7 @@ app.use(bodyParser.json());
 app.use('/bank/users',usersRoute);
 
 //mongoose.connect('mongodb://127.0.0.1:27017/bank', {
-// mongoose.connect('mongodb+srv://nettalee19:dM_HqsyqT9K8LK.@cluster0.u9jns.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     useFindAndModify: false,
-//     useCreateIndex: true
-// }).then(() => {
-//     console.log("database connected")
-// })
-
-app.get('/',(req,res)=>{
-    //res.json({success : 'Bank API'})
-    mongoose.connect('mongodb+srv://nettalee19:dM_HqsyqT9K8LK.@cluster0.u9jns.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://nettalee19:dM_HqsyqT9K8LK.@cluster0.u9jns.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
@@ -35,11 +27,12 @@ app.get('/',(req,res)=>{
 }).then(() => {
     console.log("database connected")
 })
+
+app.get('/',(req,res)=>{
+    res.json({success : 'Bank API'})
+    
 })
 
-// app.get('/', (req,res) =>{
-//     res.send("test")
-// })
 
 app.listen(process.env.PORT || 5000, () => {
     console.log(`application start at ${process.env.PORT || 5000}`)
