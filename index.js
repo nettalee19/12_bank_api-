@@ -30,6 +30,10 @@ app.get('/',(req,res)=>{
     res.json({success : 'Bank API'})
     
 })
+app.get('/blabla',(req,res)=>{
+    res.json({success : 'blabla'})
+    
+})
 
 // app.get('/', (req,res) =>{
 //     res.send("test")
