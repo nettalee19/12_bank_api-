@@ -13,20 +13,20 @@ router.get('/', async (req,res) =>{
         console.log(e)
     }
 })
-// .post('/', (req,res) =>{
-//     userController.addUser(req,res)
-// }).get('/:id/user',(req,res) =>{
-//     userController.getUserById(req,res)
-// }).put('/:id/deposit', (req,res) =>{
-//     userController.deposit(req,res)
-// }).put('/:id/credit', (req,res) =>{
-//     userController.updateCredit(req,res)
-// }).put('/:id/withdraw', (req,res) =>{
-//     userController.withdrawMoney(req,res)
-// }).put('/transfer',(req,res)=>{
-//     userController.transferMoney(req,res)
-// }).get('/alltransactions',(req,res)=>{
-//     userController.getAllTransactions(req,res)
-// })
+.post('/', (req,res) =>{
+    userController.addUser(req,res)
+}).get('/:id/user',(req,res) =>{
+    userController.getUserById(req,res)
+}).put('/:id/deposit', (req,res) =>{
+    userController.deposit(req,res)
+}).put('/:id/credit', (req,res) =>{
+    userController.updateCredit(req,res)
+}).put('/:id/withdraw', (req,res) =>{
+    userController.withdrawMoney(req,res)
+}).put('/transfer',(req,res)=>{
+    userController.transferMoney(req,res)
+}).get('/alltransactions',(req,res)=>{
+    userController.getAllTransactions(req,res)
+})
 
 module.exports = router;

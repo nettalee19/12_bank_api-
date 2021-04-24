@@ -23,11 +23,11 @@ const addUser = (req,res)=>{
 
 }
 
-const getAllUsers = async (req,res)=>{
-    const users = await accounts.find()
-    return res.send(users)
+// const getAllUsers = async (req,res)=>{
+//     const users = await accounts.find()
+//     return res.send(users)
 
-}
+// }
 
 const getAllTransactions = async (req,res)=>{
     const actions = await transactions.find()
