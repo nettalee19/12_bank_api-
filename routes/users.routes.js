@@ -4,7 +4,9 @@ const userController = require('../controllers/users.controller')
 
 router.get('/', (req,res) =>{
     //return res.status(200).json({users : users})
+    console.log("this is users")
     userController.getAllUsers(req,res)
+    console.log("this is bank")
 }).post('/', (req,res) =>{
     userController.addUser(req,res)
 }).get('/:id/user',(req,res) =>{
