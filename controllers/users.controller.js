@@ -69,39 +69,30 @@ const deposit = async (req, res) =>{
 }
 
 const updateCredit = async (req, res) =>{
-    // // const updates = Object.keys(req.body)
-    // // const allowedUpdate = ["credit"]
-    // // const isValidOperation = updates.every((update) => allowedUpdate.includes(update))
-    // const { _id } = req.params;
-    // const { credit } = req.body;
+    const updates = Object.keys(req.body)
+    const allowedUpdate = ["credit"]
+    const isValidOperation = updates.every((update) => allowedUpdate.includes(update))
 
-    // // if(!isValidOperation) {
-    // //     return res.status(400).send({error: 'Updates most only be regarding credit amount'})
-    // // }
-    // try {
-        
-    //     const user = await accounts.findByIdAndUpdate(_id,  {credit: credit }, {new:true, runValidators: true })
-    //     //console.log(user)
-    //     if(!user){
-    //         return res.status(404).json("No such account in the system")
-    //     }
-        
-    //     return res.status(200).json({"success":user})
-
-    // } catch(error){
-    //     return res.status(400).json({"error":error})
-    // }
-    const { amount } = req.body;
-    try {
-        const account = await accounts.findByIdAndUpdate(req.params.id, { $inc: { "credit": amount } }, { new: true, runValidators: true });
-        console.log(account, 'account');
-        if (!account) {
-            return res.status(404).send({ error: 'Account not found' })
+    if(!isValidOperation) {
+        return res.status(400).send({error: 'Updates most only be regarding credit amount'})
+    }
+    
+    try{
+        const user = await accounts.findByIdAndUpdate(req.params.id, {credit: req.body.credit}, {new:true, runValidators: true })
+    
+        if(!user){
+            return res.status(404).send("Account does not exist in the system")
+    
         }
+        if(req.body.credit <0){
+            return res.status(400).send({error: 'Credit must be a positive value'})
+        }
+        return res.status(200).json(user)
+
+    } catch(error){
+        res.status(400).send({"error":error})
     }
-    catch (error) {
-        res.status(400).json(error)
-    }
+
 }
 
 const withdrawMoney = (req, res) =>{

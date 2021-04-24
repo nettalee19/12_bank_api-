@@ -11,7 +11,7 @@ router.get('/', (req,res) =>{
     userController.getUserById(req,res)
 }).put('/:id/deposit', (req,res) =>{
     userController.deposit(req,res)
-}).put('/credit/:id', (req,res) =>{
+}).put('/:id/credit', (req,res) =>{
     userController.updateCredit(req,res)
 }).put('/:id/withdraw', (req,res) =>{
     userController.withdrawMoney(req,res)
