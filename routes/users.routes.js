@@ -17,6 +17,8 @@ router.get('/', (req,res) =>{
     userController.withdrawMoney(req,res)
 }).put('/transfer',(req,res)=>{
     userController.transferMoney(req,res)
+}).get('/alltransactions',(req,res)=>{
+    userController.getAllTransactions(req,res)
 })
 
 module.exports = router;

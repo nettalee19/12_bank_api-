@@ -2,19 +2,22 @@
 //const users = require('../data/users.json')
 
 const accounts = require('../models/accounts.models')
+const transactions = require('../models/transaction.models')
+
 
 const addUser = (req,res)=>{
    
     const {id, cash, credit}  = req.body
     
         const newUser = new accounts({
-            "id" : id, 
-            "cash": cash, 
-            "credit": credit
+            "id" : req.body.id, 
+            "cash": req.body.cash, 
+            "credit": req.body.credit
         })
+        console.log(newUser)
         newUser.save((err) => {
-            if (err) return res.json({"error--": err})
-            return res.json({"success": newUser})
+            if (err) return res.send({"error": err})
+            return res.send({"success": newUser})
         });
 
     //}
@@ -24,6 +27,12 @@ const addUser = (req,res)=>{
 const getAllUsers = async (req,res)=>{
     const users = await accounts.find()
     return res.send(users)
+
+}
+
+const getAllTransactions = async (req,res)=>{
+    const actions = await transactions.find()
+    return res.send(actions)
 
 }
 
@@ -60,7 +69,18 @@ const deposit = async (req, res) =>{
         if(req.body.cash <0){
             return res.status(400).send({error: 'Depoist must be a positive value'})
         }
-        return res.status(200).json(user)
+        const transaction = new transactions({
+            //to : req.params.id, 
+            toAccount : user.id, 
+            operationName: "deposit", 
+            amount: req.body.cash
+        })
+        transaction.save((err) => {
+            if (err) return res.json({"error": err})
+            return res.json({"success": transaction})
+        })
+
+        //return res.status(200).json(user)
 
     } catch(error){
         res.status(400).send({"error":error})
@@ -87,7 +107,18 @@ const updateCredit = async (req, res) =>{
         if(req.body.credit <0){
             return res.status(400).send({error: 'Credit must be a positive value'})
         }
-        return res.status(200).json(user)
+
+        const transaction = new transactions({
+            //to : req.params.id, 
+            toAccount : user.id, 
+            operationName: "Credit update", 
+            amount: req.body.credit
+        })
+        transaction.save((err) => {
+            if (err) return res.json({"error": err})
+            return res.json({"success": transaction})
+        })
+        //return res.status(200).json(user)
 
     } catch(error){
         res.status(400).send({"error":error})
@@ -95,37 +126,116 @@ const updateCredit = async (req, res) =>{
 
 }
 
-const withdrawMoney = (req, res) =>{
-    const updates = Object.keys(req.body)
-    const allowedUpdate = ["cash"]
-    const isValidOperation = updates.every((update) => allowedUpdate.includes(update))
-    const { _id } = req.params;
-    const { withdraw } = req.body;
+const withdrawMoney = async(req, res) =>{
 
-    //const {id} = req.params
-    if(!isValidOperation) {
-        return res.status(400).send({error: 'Updates most only be regarding withdraw amount'})
-    }
+    const askedAccount = req.params.id
+    const {amount} = req.body
+    const exist = await accounts(askedAccount);
+    if (amount>0) {
+        if(exist) {
+            if(exist.balance + exist.credit >= amount) {
+                try {
+                    await accounts.updateOne({passport: askedAccount}, {$inc: {"cash": -amount}});
+                     
+                     res.send("updated")
+                 }
+                 catch(err) {
+                    res.send(err)
+                 }
+            } }}
 
-    if(withdraw < 0 ){
-        res.status(404).send("Withdraw must be a positive amount")
-    }
+    // const {id} = req.params.id
+    // //const {withdraw} = req.body.withdraw
+    // const user = await accounts.findById({id})
+    // console.log(user)
 
-    else{
+    // if(!user){
+    //     return res.status(404).send("Account does not exist in the system")
 
-        if(withdraw <= user.cash){//if the withdraw amount is below the cash
-            user.cash = user.cash-withdraw
-            console.log(user.cash)
-            fs.writeFileSync('./data/users.json', JSON.stringify(users))
-            res.status(200).send(`${withdraw}$ were withdrawen out of the account. Current balance is: ${user.cash}$`)
-        } else if(withdraw > user.cash && withdraw <= (user.cash + user.credit)){
-            user.cash -= withdraw;
-            fs.writeFileSync('./data/users.json', JSON.stringify(users))
-            res.status(200).send(`${withdraw}$ were withdrawen out of the account. Current balance is: ${user.cash}$`)
-        } else{
-            res.status(200).send(`This action is not allowed. You are over your credit limit`)
-        }   
-    }
+    // }
+
+    // const {id} = req.params
+
+    // const user = await accounts.find({user_id: `${id}`})
+    // const {_id} = req.params.id
+    // const user = await accounts.findById(req.params.id)
+
+    // if(!user){
+    //     return res.status(404).send("Account does not exist in the system")
+
+    // }
+    // if(req.body.withdraw <= 0){
+    //     return res.status(400).send("Withdraw amount must be positive")
+    // }else if(req.body.withdraw <= user.cash){
+    //     console.log("yay")
+    //     user = await accounts.updateOne(_id, {$inc:{cash: - req.body.withdraw}})
+    // }
+    // console.log(user.credit)
+    // return res.send(user)
+
+    //const user = await 
+
+    // const updates = Object.keys(req.body)
+    // const allowedUpdate = ["credit"]
+    // const isValidOperation = updates.every((update) => allowedUpdate.includes(update))
+
+    // if(!isValidOperation) {
+    //     return res.status(400).send({error: 'Updates most only be regarding credit amount'})
+    // }
+
+    // const {_id} = req.params
+    
+    // try{
+    //     const user = await accounts.find({user_id: `${_id}`})
+    
+    //     if(!user){
+    //         return res.status(404).send("Account does not exist in the system")
+    
+    //     }
+    //     // if(req.body.credit <0){
+    //     //     return res.status(400).send({error: 'Credit must be a positive value'})
+    //     // }
+    //     return res.status(200).json(user)
+
+    // } catch(error){
+    //     res.status(400).send({"error":error})
+    // }
+
+
+
+
+
+
+    // const updates = Object.keys(req.body)
+    // const allowedUpdate = ["cash"]
+    // const isValidOperation = updates.every((update) => allowedUpdate.includes(update))
+    // const { _id } = req.params;
+    // const { withdraw } = req.body;
+
+    // //const {id} = req.params
+    // if(!isValidOperation) {
+    //     return res.status(400).send({error: 'Updates most only be regarding withdraw amount'})
+    // }
+
+    // if(withdraw < 0 ){
+    //     res.status(404).send("Withdraw must be a positive amount")
+    // }
+
+    // else{
+
+    //     if(withdraw <= user.cash){//if the withdraw amount is below the cash
+    //         user.cash = user.cash-withdraw
+    //         console.log(user.cash)
+    //         fs.writeFileSync('./data/users.json', JSON.stringify(users))
+    //         res.status(200).send(`${withdraw}$ were withdrawen out of the account. Current balance is: ${user.cash}$`)
+    //     } else if(withdraw > user.cash && withdraw <= (user.cash + user.credit)){
+    //         user.cash -= withdraw;
+    //         fs.writeFileSync('./data/users.json', JSON.stringify(users))
+    //         res.status(200).send(`${withdraw}$ were withdrawen out of the account. Current balance is: ${user.cash}$`)
+    //     } else{
+    //         res.status(200).send(`This action is not allowed. You are over your credit limit`)
+    //     }   
+    // }
 
 }
 
@@ -166,5 +276,7 @@ module.exports = {
     deposit,
     updateCredit,
     withdrawMoney,
-    transferMoney
+    transferMoney,
+
+    getAllTransactions
 }

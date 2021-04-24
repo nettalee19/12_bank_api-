@@ -1,17 +1,17 @@
 const mongoose = require('mongoose')
 
-const Accounts = mongoose.model('accounts',{
-    from:{
+const Transctions = mongoose.model('transactions',{
+    fromAccount:{
         type: String,
-        required: true,
+        required: false,
         
     },
-    to:{
+    toAccount:{
         type: String,
-        required: true,
+        required: false,
         
     },
-    operationType: {
+    operationName: {
         type: String, 
         required: true,
     
@@ -19,9 +19,13 @@ const Accounts = mongoose.model('accounts',{
     amount: {
 		type: Number,
 		required: true,
-	}
+	},
+    date:{
+        type: Date,
+        default: Date.now()
+    }
     
 })
 
 
-module.exports= Accounts;
+module.exports= Transctions;
