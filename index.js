@@ -4,19 +4,19 @@ const mongoose = require('mongoose');
 
 const app = express();
 const usersRoute = require('./routes/users.routes');
-//const port =5000;
 const cors = require('cors');
+//const port =5000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
-// const cors = require('cors');
+app.use('/bank/users',usersRoute);
+
 
 // const db=fs.readFileSync('../data/users.json').toString()
 // dbb=JSON.parse(db)
 
-//app.use(cors());
-app.use('/bank/users',usersRoute);
+
 
 //mongoose.connect('mongodb://127.0.0.1:27017/bank', {
 mongoose.connect('mongodb+srv://nettalee19:dM_HqsyqT9K8LK.@cluster0.u9jns.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
@@ -29,7 +29,7 @@ mongoose.connect('mongodb+srv://nettalee19:dM_HqsyqT9K8LK.@cluster0.u9jns.mongod
 })
 
 app.get('/',(req,res)=>{
-    res.json({success : 'Bank API'})
+    res.send({success : usersRoute})
     
 })
 
