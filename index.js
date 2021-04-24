@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const mongoose = require('mongoose');
 const usersRoute = require('./routes/users.routes');
-const port =8001;
+const port =5000;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -28,6 +28,11 @@ app.get('/', (req,res) =>{
     res.send("test")
 })
 
+app.listen(process.env.PORT || 5000, () => {
+    console.log(`application start at ${process.env.PORT || 5000}`)
+})
+
+
 // app.get('/',(req,res)=>{
 //     //return res.json({success : {id:12,email : 'nully@gmail.com'}})
 //     //return res.send({success : "API IS WORKING!"})
@@ -36,10 +41,6 @@ app.get('/', (req,res) =>{
 //  })
 
 
-app.listen(port,()=>{
-    console.log(`bank's app start at ${port}`)
-})
-
-// app.listen(process.env.PORT || 5000, () => {
-//     console.log(`application start at ${process.env.PORT || 5000}`)
+// app.listen(port,()=>{
+//     console.log(`bank's app start at ${port}`)
 // })
