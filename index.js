@@ -16,17 +16,17 @@ app.use(bodyParser.json());
 app.use('/bank/users',usersRoute);
 
 //mongoose.connect('mongodb://127.0.0.1:27017/bank', {
-// mongoose.connect('mongodb+srv://nettalee19:dM_HqsyqT9K8LK.@cluster0.u9jns.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     useFindAndModify: false,
-//     useCreateIndex: true
-// }).then(() => {
-//     console.log("database connect")
-// });
-app.get('/', (req,res) =>{
-    res.send("test")
-})
+mongoose.connect('mongodb+srv://nettalee19:dM_HqsyqT9K8LK.@cluster0.u9jns.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true
+}).then(() => {
+    console.log("database connect")
+});
+// app.get('/', (req,res) =>{
+//     res.send("test")
+// })
 
 app.listen(process.env.PORT || 5000, () => {
     console.log(`application start at ${process.env.PORT || 5000}`)
