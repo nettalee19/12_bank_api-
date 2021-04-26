@@ -23,7 +23,13 @@ const Transctions = mongoose.model('transactions',{
     date:{
         type: Date,
         default: Date.now()
+    },
+    owner:{
+        type: mongoose.Schema.Types.ObjectID,
+        required: true,
+        ref: 'accounts'
     }
+
     
 })
 
